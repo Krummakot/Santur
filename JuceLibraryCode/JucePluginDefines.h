@@ -38,7 +38,7 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "SanturTestAllStrings"
+ #define JucePlugin_Name                   "Santur"
 #endif
 #ifndef  JucePlugin_Desc
  #define JucePlugin_Desc                   "SanturTestAllStrings"
@@ -149,7 +149,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: SanturTestAllStrings"
+ #define JucePlugin_IAAName                "yourcompany: Santur"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16

@@ -98,116 +98,49 @@ void SanturTestAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     DBG("prepareToPlay Called");
     
     //resize vectors
-    rValues.resize(18);
-    aValues.resize(18);
-    iValues.resize(18);
+    rValues.resize(Global::nrSanturNotes);
+    aValues.resize(Global::nrSanturNotes);
+    iValues.resize(Global::nrSanturNotes);
+    stringsOut.resize(Global::nrSanturNotes);
+    playNote.resize(Global::nrSanturNotes);
+    triggerProcess.resize(Global::nrSanturNotes);
+    midiValues.resize(Global::nrSanturNotes);
+    
     
     // prepare circular buffers
-    enqueue(0);
-    enqueue(0);
-    enqueue(0);
-    enqueue(0);
-    enqueue(0);
-    enqueue(0);
-
+    for (int i = 0; i < Global::maxActiveNotes; ++i) {
+        enqueue(0);
+    }
     
     // Fill r, a, and i vectors with appropriate value for each string
     // If number is even, use Ebrass, otherwise Esteel
-    for(int i = 0; i < 18; ++i) {
+    for(int i = 0; i < Global::nrSanturNotes; ++i) {
+        playNote[i] = false;
+        triggerProcess[i] = false;
+        midiValues[i] = i + midiBaseNote;
         if(i % 2 == 0) {
-            rValues[i] = (pow(4,0.25)*pow(B,0.25)*pow(stringTensions[i],0.25)*pow(stringLengths[i],0.5))/(pow(double_Pi,0.25)*pow(Ebrass,0.25));
-            aValues[i] = double_Pi * (rValues[i] * rValues[i]);
-            iValues[i] = double_Pi * rValues[i] * rValues[i] * rValues[i] * rValues[i] * 0.25;
+            rValues[i] = (pow(4,0.25)*pow(Global::B,0.25)*pow(stringTensions[i],0.25))/(pow(Global::PI,0.25)*pow(Ebrass,0.25));
+            aValues[i] = Global::PI * (rValues[i] * rValues[i]);
+            iValues[i] = Global::PI * rValues[i] * rValues[i] * rValues[i] * rValues[i] * 0.25;
         } else {
-            rValues[i] = (pow(4,0.25)*pow(B,0.25)*pow(stringTensions[i],0.25)*pow(stringLengths[i],0.5))/(pow(double_Pi,0.25)*pow(Esteel,0.25));
-            aValues[i] = double_Pi * (rValues[i] * rValues[i]);
-            iValues[i] = double_Pi * rValues[i] * rValues[i] * rValues[i] * rValues[i] * 0.25;
+            rValues[i] = (pow(4,0.25)*pow(Global::B,0.25)*pow(stringTensions[i],0.25))/(pow(Global::PI,0.25)*pow(Esteel,0.25));
+            aValues[i] = Global::PI * (rValues[i] * rValues[i]);
+            iValues[i] = Global::PI * rValues[i] * rValues[i] * rValues[i] * rValues[i] * 0.25;
         }
     }
     
-    fs = getSampleRate();
+    Fs = getSampleRate();
     
-    // Initialise the string pointers with appropriate values
-    string1 = std::make_unique<SanturString>(stringLengths[0], s0, s1, stringTensions[0], pBrass, aValues[0], Ebrass, iValues[0], rValues[0], fs);
-
-    string2 = std::make_unique<SanturString>(stringLengths[1], s0, s1, stringTensions[1], pSteel, aValues[1], Esteel, iValues[1], rValues[1], fs);
-
-    string3 = std::make_unique<SanturString>(stringLengths[2], s0, s1, stringTensions[2], pBrass, aValues[2], Ebrass, iValues[2], rValues[2], fs);
-
-    string4 = std::make_unique<SanturString>(stringLengths[3], s0, s1, stringTensions[3], pSteel, aValues[3], Esteel, iValues[3], rValues[3], fs);
-
-    string5 = std::make_unique<SanturString>(stringLengths[4], s0, s1, stringTensions[4], pBrass, aValues[4], Ebrass, iValues[4], rValues[4], fs);
-
-    string6 = std::make_unique<SanturString>(stringLengths[5], s0, s1, stringTensions[5], pSteel, aValues[5], Esteel, iValues[5], rValues[5], fs);
-
-    string7 = std::make_unique<SanturString>(stringLengths[6], s0, s1, stringTensions[6], pBrass, aValues[6], Ebrass, iValues[6], rValues[6], fs);
-
-    string8 = std::make_unique<SanturString>(stringLengths[7], s0, s1, stringTensions[7], pSteel, aValues[7], Esteel, iValues[7], rValues[7], fs);
-
-    string9 = std::make_unique<SanturString>(stringLengths[8], s0, s1, stringTensions[8], pBrass, aValues[8], Ebrass, iValues[8], rValues[8], fs);
-
-    string10 = std::make_unique<SanturString>(stringLengths[9], s0, s1, stringTensions[9], pSteel, aValues[9], Esteel, iValues[9], rValues[9], fs);
-
-    string11  = std::make_unique<SanturString>(stringLengths[10], s0, s1, stringTensions[10], pBrass, aValues[10], Ebrass, iValues[10], rValues[10], fs);
-
-    string12  = std::make_unique<SanturString>(stringLengths[11], s0, s1, stringTensions[11], pSteel, aValues[11], Esteel, iValues[11], rValues[11], fs);
-
-    string13  = std::make_unique<SanturString>(stringLengths[12], s0, s1, stringTensions[12], pBrass, aValues[12], Ebrass, iValues[12], rValues[12], fs);
-
-    string14  = std::make_unique<SanturString>(stringLengths[13], s0, s1, stringTensions[13], pSteel, aValues[13], Esteel, iValues[13], rValues[13], fs);
-
-    string15  = std::make_unique<SanturString>(stringLengths[14], s0, s1, stringTensions[14], pBrass, aValues[14], Ebrass, iValues[14], rValues[14], fs);
-
-    string16  = std::make_unique<SanturString>(stringLengths[15], s0, s1, stringTensions[15], pSteel, aValues[15], Esteel, iValues[15], rValues[15], fs);
-
-    string17 = std::make_unique<SanturString>(stringLengths[16], s0, s1, stringTensions[16], pBrass, aValues[16], Ebrass, iValues[16], rValues[16], fs);
-
-    string18 = std::make_unique<SanturString>(stringLengths[17], s0, s1, stringTensions[17], pSteel, aValues[17], Esteel, iValues[17], rValues[17], fs);
+    santurNotes.clear();
     
-    
-    // Get each pointer
-    string1.get();
-    string2.get();
-    string3.get();
-    string4.get();
-    string5.get();
-    string6.get();
-    string7.get();
-    string8.get();
-    string9.get();
-    string10.get();
-    string11.get();
-    string12.get();
-    string13.get();
-    string14.get();
-    string15.get();
-    string16.get();
-    string17.get();
-    string18.get();
-    
-    // Move the pointers to a OwnedArray. This way, we can access each through a for-loop
-    santurStrings.clear();
-    santurStrings.add(std::move(string1));
-    santurStrings.add(std::move(string2));
-    santurStrings.add(std::move(string3));
-    santurStrings.add(std::move(string4));
-    santurStrings.add(std::move(string5));
-    santurStrings.add(std::move(string6));
-    santurStrings.add(std::move(string7));
-    santurStrings.add(std::move(string8));
-    santurStrings.add(std::move(string9));
-    santurStrings.add(std::move(string10));
-    santurStrings.add(std::move(string11));
-    santurStrings.add(std::move(string12));
-    santurStrings.add(std::move(string13));
-    santurStrings.add(std::move(string14));
-    santurStrings.add(std::move(string15));
-    santurStrings.add(std::move(string16));
-    santurStrings.add(std::move(string17));
-    santurStrings.add(std::move(string18));
-    DBG("sample rate:");
-    DBG(fs);
-    
+    for (int i = 0; i < Global::nrSanturNotes; ++i) {
+        if (i % 2 == 0) {
+            santurNotes.add(std::make_unique<SanturNote>(stringLength, s0, s1, stringTensions[i], pBrass, aValues[i], Ebrass, iValues[i], rValues[i], Fs));
+        } else {
+            santurNotes.add(std::make_unique<SanturNote>(stringLength, s0, s1, stringTensions[i], pSteel, aValues[i], Esteel, iValues[i], rValues[i], Fs));
+        }
+    }
+    isActive = true;
 }
 
 void SanturTestAudioProcessor::releaseResources()
@@ -255,7 +188,7 @@ void SanturTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         auto message = metadata.getMessage();
         
         if(message.isNoteOn()) { // If note is triggered
-            for (int n = 0; n < 18; n++){
+            for (int n = 0; n < Global::nrSanturNotes; n++){
                 if(message.getNoteNumber() == midiValues[n]) { // Get midi note and velocity
                     velocityFullRange = message.getVelocity();
                     velocityNormalized = (velocityFullRange/127); // normalise velocity to 0-1
@@ -271,10 +204,9 @@ void SanturTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
                         enqueue(message.getNoteNumber());
                         playNote[n] = true;
                         triggerProcess[n] = true;
-                        
+
                         startTimer(10000);
                     }
-                    displayQueue();
                 }
             }
         }
@@ -286,9 +218,13 @@ void SanturTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
+    if (!isActive) {
+            return;
+    }
+    
     // ..do something to the data...
-    float* const channelData1 = buffer.getWritePointer(0);
-    float* const channelData2 = buffer.getWritePointer(1);
+    float* const channelDataL = buffer.getWritePointer(0);
+    float* const channelDataR = buffer.getWritePointer(1);
     for (int i = 0; i < buffer.getNumSamples(); ++i) {
         
         // Process the active strings
@@ -298,8 +234,8 @@ void SanturTestAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         mainOut = outputSound();
         
         // output sound
-        channelData1[i] = limit(mainOut, -1.f, 1.f);
-        channelData2[i] = limit(mainOut, -1.f, 1.f);
+        channelDataL[i] = limit(mainOut, -1.f, 1.f);
+        channelDataR[i] = limit(mainOut, -1.f, 1.f);
         
     }
 }
@@ -316,17 +252,12 @@ juce::AudioProcessorEditor* SanturTestAudioProcessor::createEditor()
 }
 
 //==============================================================================
-void SanturTestAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
-{
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+void SanturTestAudioProcessor::getStateInformation (juce::MemoryBlock& destData) {
+
 }
 
-void SanturTestAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
-{
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+void SanturTestAudioProcessor::setStateInformation (const void* data, int sizeInBytes) {
+
 }
 
 float SanturTestAudioProcessor::limit(float input, float min, float max) {
@@ -340,53 +271,39 @@ float SanturTestAudioProcessor::limit(float input, float min, float max) {
 
 void SanturTestAudioProcessor::checkActiveNotes() {
     
-    for(int i = 0; i < 18; ++i) {
+    for(int i = 0; i < Global::nrSanturNotes; ++i) {
         if(playNote[i]) {
-            santurStrings[i]->setPluckLoc(pluckLoc);
-            santurStrings[i]->excite(excitationSelection, vel[i]);
+            santurNotes[i]->setPluckLoc(Global::pluckLoc);
+            santurNotes[i]->excite(excitationSelection, vel[i]);
             playNote[i] = false;
         }
     }
 }
 
 void SanturTestAudioProcessor::processAndUpdateStrings() {
-    for(int i = 0; i < 18; ++i) {
+    for(int i = 0; i < Global::nrSanturNotes; ++i) {
         if(triggerProcess[i]) {
-            santurStrings[i]->processScheme();
-            santurStrings[i]->updateStates();
+            santurNotes[i]->processScheme();
+            santurNotes[i]->updateStates();
         }
     }
 }
 
 double SanturTestAudioProcessor::outputSound() {
-    double out;
-    stringOut0 = santurStrings[0]->getOutput(outPos);
-    stringOut1 = santurStrings[1]->getOutput(outPos);
-    stringOut2 = santurStrings[2]->getOutput(outPos);
-    stringOut3 = santurStrings[3]->getOutput(outPos);
-    stringOut4 = santurStrings[4]->getOutput(outPos);
-    stringOut5 = santurStrings[5]->getOutput(outPos);
-    stringOut6 = santurStrings[6]->getOutput(outPos);
-    stringOut7 = santurStrings[7]->getOutput(outPos);
-    stringOut8 = santurStrings[8]->getOutput(outPos);
-    stringOut9 = santurStrings[9]->getOutput(outPos);
-    stringOut10 = santurStrings[10]->getOutput(outPos);
-    stringOut11 = santurStrings[11]->getOutput(outPos);
-    stringOut12 = santurStrings[12]->getOutput(outPos);
-    stringOut13 = santurStrings[13]->getOutput(outPos);
-    stringOut14 = santurStrings[14]->getOutput(outPos);
-    stringOut15 = santurStrings[15]->getOutput(outPos);
-    stringOut16 = santurStrings[16]->getOutput(outPos);
-    stringOut17 = santurStrings[17]->getOutput(outPos);
+    double out = 0.0;
     
+    for (int i = 0; i < Global::nrSanturNotes; ++i) {
+        stringsOut[i] = santurNotes[i]->getOutput(Global::outPos);
+        out += stringsOut[i];
+    }
     
-    out = (stringOut0 + stringOut1 + stringOut2 + stringOut3 + stringOut4 + stringOut5 + stringOut6 + stringOut7 + stringOut8 + stringOut9 + stringOut10 + stringOut11 + stringOut12 + stringOut13 + stringOut14 + stringOut15 + stringOut16 + stringOut17)*0.3;
+    out *= 0.3;
     
     return out;
 }
 
 void SanturTestAudioProcessor::timerCallback() {
-    for(int i = 0; i < 18; ++i) {
+    for(int i = 0; i < Global::nrSanturNotes; ++i) {
         if (triggerProcess[i] == true) {
             triggerProcess[i] = false;
             currentActiveNotes = 0;
@@ -396,96 +313,32 @@ void SanturTestAudioProcessor::timerCallback() {
 
 
 using namespace std;
-#define SIZE 6
 int front = -1;
 int rear = -1;
 
-//Function to check if queue is empty or not
-bool SanturTestAudioProcessor::isEmpty()
-{
-    if(front == -1 && rear == -1)
-        return true;
-    else
-        return false;
-}
-
 //function to enter elements in queue
-void SanturTestAudioProcessor::enqueue ( int value )
-{
-    //queue is full
-    if ((rear + 1)%SIZE == front)
-        cout<<"Queue is full \n";
-    else
-    {
-        //first element inserted
-        if( front == -1)
-            front = 0;
-        //insert element at rear
-        rear = (rear+1)%SIZE;
-        A[rear] = value;
-//        cout<<"addedElement: \n";
-//        cout<<value<<" \n";
-    }
+void SanturTestAudioProcessor::enqueue (int value) {
+    //first element inserted
+    if( front == -1)
+        front = 0;
+    
+    //insert element at rear
+    rear = (rear+1)%Global::maxActiveNotes;
+    A[rear] = value;
 }
 
 //function to delete/remove element from queue
-void SanturTestAudioProcessor::dequeue ( )
-{
-    if( isEmpty() )
-        cout<<"Queue is empty\n";
-    else
-        //only one element
-        if( front == rear ) {
-            front = rear = -1;
-        } else {
-            
-            for (int i = 0; i < 18; ++i) {
-                if(midiValues[i] == A[front]) {
-                    triggerProcess[i] = false;
-                }
-            }
-//            cout<<"removedElement: \n";
-//            cout<<A[front]<<" \n";
-            front = (front + 1)%SIZE;
-        }
-}
-
-//function to show the element at front
-void SanturTestAudioProcessor::showFront( )
-{
-    if( isEmpty())
-        cout<<"Queue is empty\n";
-    else
-        cout<<"element at front is:"<<A[front];
-}
-
-//function to display queue
-void SanturTestAudioProcessor::displayQueue()
-{
-    if(isEmpty())
-        cout<<"Queue is empty\n";
-    else
-    {
-        int i;
-        if( front <= rear )
-        {
-            
-//            for( i=front ; i<= rear ; i++)
-//                DBG("MIDI BUFFER:");
-//                DBG(A[i]);
-        }
-        else {
-            i=front;
-            while( i < SIZE) {
-//                cout<<A[i]<<" \n";
-                i++;
-            }
-            i=0;
-            while( i <= rear) {
-//                cout<<A[i]<<" \n";
-                i++;
+void SanturTestAudioProcessor::dequeue () {
+    //only one element
+    if( front == rear ) {
+        front = rear = -1;
+    } else {
+        for (int i = 0; i < Global::nrSanturNotes; ++i) {
+            if(midiValues[i] == A[front]) {
+                triggerProcess[i] = false;
             }
         }
+        front = (front + 1)%Global::maxActiveNotes;
     }
 }
 

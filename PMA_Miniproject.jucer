@@ -2,12 +2,13 @@
 
 <JUCERPROJECT id="NsOBNh" name="SanturTestAllStrings" projectType="audioplug"
               useAppConfig="0" addUsingNamespaceToJuceHeader="1" displaySplashScreen="1"
-              jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn">
+              jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
+              pluginName="Santur">
   <MAINGROUP id="i3FRmn" name="SanturTestAllStrings">
     <GROUP id="{B6B11BB8-EDB5-7BBA-E3A0-4BC4C28909FE}" name="Source">
-      <FILE id="jcobkM" name="SanturString.cpp" compile="1" resource="0"
-            file="Source/SanturString.cpp"/>
-      <FILE id="bFGTTT" name="SanturString.h" compile="0" resource="0" file="Source/SanturString.h"/>
+      <FILE id="AKDw0a" name="Global.h" compile="0" resource="0" file="Source/Global.h"/>
+      <FILE id="jcobkM" name="SanturNote.cpp" compile="1" resource="0" file="Source/SanturNote.cpp"/>
+      <FILE id="bFGTTT" name="SanturNote.h" compile="0" resource="0" file="Source/SanturNote.h"/>
       <FILE id="YMYNgv" name="DampedString.cpp" compile="1" resource="0"
             file="Source/DampedString.cpp"/>
       <FILE id="mzeCZz" name="DampedString.hpp" compile="0" resource="0"
@@ -20,7 +21,6 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="c2IANB" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
-    <FILE id="EPb0ln" name="santur2.jpg" compile="0" resource="1" file="../../Desktop/santur2.jpg"/>
     <FILE id="KTyLkK" name="screensize.png" compile="0" resource="1" file="Resources/screensize.png"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

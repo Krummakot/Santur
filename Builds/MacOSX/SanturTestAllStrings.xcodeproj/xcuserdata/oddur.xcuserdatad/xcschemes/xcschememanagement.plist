@@ -7,12 +7,17 @@
 		<key>SanturTestAllStrings - AU.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>2</integer>
+		</dict>
+		<key>SanturTestAllStrings - Ableton.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
 		</dict>
 		<key>SanturTestAllStrings - All.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>SanturTestAllStrings - Shared Code.xcscheme_^#shared#^_</key>
 		<dict>
@@ -32,7 +37,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>F263F202B1308094C519A236</key>
+		<key>328C5B172E22CE4CE8B0840B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

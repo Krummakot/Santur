@@ -8,14 +8,11 @@
 
 namespace BinaryData
 {
-    extern const char*   santur2_jpg;
-    const int            santur2_jpgSize = 497566;
-
     extern const char*   screensize_png;
     const int            screensize_pngSize = 112336;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 2;
+    const int namedResourceListSize = 1;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
